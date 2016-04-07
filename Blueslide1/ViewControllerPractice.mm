@@ -194,7 +194,7 @@ typedef enum {
     tempView.hidden = YES;
     
     //Show labels for periodicity after guiding image is hidden
-    UILabel* periodicity = [[UILabel alloc] initWithFrame:CGRectMake(170, 0, 220, 50)];
+    /*UILabel* periodicity = [[UILabel alloc] initWithFrame:CGRectMake(170, 0, 220, 50)];
     periodicity.tag = 1006;
     periodicity.numberOfLines = 1;
     periodicity.textAlignment = NSTextAlignmentCenter;
@@ -202,27 +202,50 @@ typedef enum {
     periodicity.text = @" Periodicity ";
     periodicity.textColor = [UIColor grayColor];
     [self.view addSubview:periodicity];
+    */
+    
+    //Show counted number of periods
+   
+
     
     //Show labels for periodic motionafter  guiding image is hidden
-     UILabel* AboutMotion = [[UILabel alloc] initWithFrame:CGRectMake(280, 50, 550, 130)];
+    /*
+    
+    UILabel* AboutMotion = [[UILabel alloc] initWithFrame:CGRectMake(280, 50, 550, 130)];
      AboutMotion.tag = 1005;
      AboutMotion.numberOfLines = 3;
      AboutMotion.textAlignment = NSTextAlignmentCenter;
      [AboutMotion setFont:[UIFont fontWithName:@"Comic Sans MS" size:25]];
-     AboutMotion.text = @" The back and forth motion of swing pendulum repeats in equal amount of time. It is called 'Periodic Motion'";
+     AboutMotion.text = @" Observe the Periodic Motion of the swing pendulum";
      AboutMotion.textColor = [UIColor whiteColor];
      AboutMotion.backgroundColor = [UIColor grayColor];
      [self.view addSubview:AboutMotion];
     
-    UILabel* reset = [[UILabel alloc] initWithFrame:CGRectMake(280, 550, 550, 130)];
-    reset.tag = 1006;
+    
+    UILabel* reset = [[UILabel alloc] initWithFrame:CGRectMake(280, 600, 550, 130)];
+    reset.tag = 1007;
     reset.numberOfLines = 3;
     reset.textAlignment = NSTextAlignmentCenter;
     [reset setFont:[UIFont fontWithName:@"Comic Sans MS" size:25]];
-    reset.text = @" You can tap on the screen to reset. Redraw the rectangle to select your friend";
+    reset.text = @" Tap on the screen to reset and redraw ";
     reset.textColor = [UIColor whiteColor];
     //reset.backgroundColor = [UIColor grayColor];
     [self.view addSubview:reset];
+     
+     */
+    
+    
+    UILabel* cycle = [[UILabel alloc] initWithFrame:CGRectMake(470, 200, 220, 50)];
+    cycle.tag = 1008;
+    cycle.numberOfLines = 1;
+    cycle.textAlignment = NSTextAlignmentCenter;
+    [cycle setFont:[UIFont fontWithName:@"Comic Sans MS" size:23]];
+    //cycle.text = @" length ";
+    cycle.textColor = [UIColor grayColor];
+    [self.view addSubview:cycle];
+    
+    
+   // NSLog(@"Period is: %f",count);
     
 }
 
@@ -257,10 +280,14 @@ typedef enum {
         }
         cmtTracker = new cmt::CMT();
         cmtTracker->initialize(img_gray,initCTBox);
-        NSLog(@"cmt track init!");
+        //NSLog(@"cmt track init!");
         startTracking = true;
         beginInit = false;
     }
+    
+  
+    
+   
     
     if (startTracking)
     {
@@ -281,6 +308,14 @@ typedef enum {
         Point2f vertices_new[4];
         rect.points(vertices_new);
         
+        float labelx = rect.center.x;
+        float labely = rect.center.y;
+        
+        CGPoint curvePoint = CGPointMake(labelx, labely);
+        
+        //UILabel *tempLabel = (UILabel *)[self.view viewWithTag:1008];
+       // tempLabel.center = CGPointMake(labelx, labely);
+        //tempLabel.text = [NSString stringWithFormat:@"Length "];
         
         float width = 640;
         float height = 640;
@@ -303,9 +338,42 @@ typedef enum {
         circle(image, pivot_top, 3, Scalar(255,255,0), -1);
         line(image,pivot_top,rect.center, Scalar(255,255,0),0.5,LINE_8);
         
+       /* UILabel* cycle = [[UILabel alloc] initWithFrame:CGRectMake(470, 200, 220, 50)];
+        cycle.tag = 1008;
+        cycle.numberOfLines = 1;
+        cycle.textAlignment = NSTextAlignmentCenter;
+        [cycle setFont:[UIFont fontWithName:@"Comic Sans MS" size:23]];
+        cycle.text = @" length ";
+        cycle.textColor = [UIColor grayColor];
+        [self.view addSubview:cycle];
+        */
+        
+        
         //lines to guide the position of the player on swing
         line(copy, pivot_top,pivot_bottom, Scalar(0,255,255));
         line(copy, right_center,left_center, Scalar(0,255,255));
+        
+        //code to draw trail
+        /*line(copy, right_center,left_center, Scalar(0,255,255));
+        float start_point_x = 320;
+        float end_point_x = rect.center.x;
+        vector<Point2f> curvePoints;
+        
+        
+         //Define the curve through equation. In this example, a simple parabola
+        for (float x = start_point_x; x <= end_point_x; x+=1){
+            float y = 0.0425*x*x - 6.25*x + 258;
+            Point2f new_point = Point2f(2*x, 2*y);                  //resized to better visualize
+            curvePoints.push_back(new_point);                       //add point to vector/list
+        }
+        
+        //Option 1: use polylines
+        Mat curve(curvePoints, true);
+        curve.convertTo(curve, CV_32S); //adapt type for polylines
+        polylines(copy, curve, false, Scalar(255), 2);
+        */
+        
+        
         
         // Periodic motion, in physics, motion repeated in equal intervals of time.
         
@@ -316,27 +384,70 @@ typedef enum {
             ellipse(copy, rect, Scalar(255,255,0),-1);
         }
       
-        /*//code for counting cycles based on how many times pendulum crosses the midpoint of axis drawn
-        float count;
-        if ( rect.center.x == pivot_top.x)
-        {
-            count++;
-            NSLog(@"Period Count is:");
-        }
+   
+        
+        
+
+        //code for counting cycles based on how many times pendulum crosses the midpoint of axis drawn and print it
+      // if (int(roundf(rect.center.x)) > 310 && int(roundf(rect.center.x)) < 325 )
+       // {
+       //     count++;
+        //    NSLog(@"Count is: %f",count);
+           
+            
+        //}
+       
+       /*
+        Point2f remappedCenter ; // point to create a remapped pendulum, this is to visualise periodicity on x axis or amplitude of the motion
+        
+        remappedCenter.x =  rect.center.x;
+        remappedCenter.y = 20;
+        circle(copy, remappedCenter, 10, Scalar(255,255,0), -1);
+        line(copy, Point2f(0,20),Point2f(640,20), Scalar(0,255,255));
         */
         
-        Point2f newCenter ; // point to create a remapped pendulum, this is to visualise periodicity on x axis or amplitude of the motion
-        newCenter.x =  rect.center.x;
-        newCenter.y = 20;
-        circle(copy, newCenter, 10, Scalar(255,255,0), -1);
-        line(copy, Point2f(0,20),Point2f(640,20), Scalar(0,255,255));
         
+        
+        /* CGMutablePathRef arc = CGPathCreateMutable();
+        CGPathMoveToPoint(arc, NULL,
+                          remappedCenter.x, remappedCenter.y);
+        
+        CGPathAddArc(arc, NULL,
+                     rect.center.x, rect.center.y,
+                     10,
+                     M_PI_4,
+                     M_PI_2,
+                     YES);
+        */
+        
+        //code to draw an arc
+        
+        float axis_length = sqrtf((rect.center.x - pivot_top.x)*(rect.center.x - pivot_top.x) + (rect.center.y - pivot_top.y)*(rect.center.y - pivot_top.y)); // calculating length of axis for elliptical arc
+   
+        
+        ellipse(copy, cv::Point(pivot_top.x, pivot_top.y), cv::Size(axis_length, axis_length), 0, 35, 145, cvScalar(0,250,250),2,8);
+        
+       //Math mode labels
+        
+        putText(image, "lenght", cvPoint(rect.center.x, rect.center.y - 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,250,250));
+        putText(image, "mass", cvPoint(rect.center.x+40, rect.center.y), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,250,250));
+        putText(image, "pivot", cvPoint(pivot_top.x +10, pivot_top.y+8), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,250,250));
+        putText(image, "" ,cvPoint(pivot_top.x -5, pivot_top.y+18), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,250,250));
+        
+        //arc for showing theta
+        ellipse(image, cv::Point(pivot_top.x, pivot_top.y), cv::Size(30, 30), 0, 90, 150 - rect.center.x/5, cvScalar(0,250,250),2,8);
+        
+        //map force
+        arrowedLine(image, cvPoint(rect.center.x, rect.center.y), cvPoint(rect.center.x, rect.center.y+60), cvScalar(0,255,255));
+        putText(image, "Force", cvPoint(rect.center.x, rect.center.y+90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,250,250));
         
         
         //blending the two mats
         addWeighted(copy, 0.3, image, 0.9, 0.0, image);
+       
         
     }
+    
 }
 
 

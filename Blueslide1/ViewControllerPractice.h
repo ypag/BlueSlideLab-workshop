@@ -15,4 +15,8 @@
 #import <UIKit/UIKit.h>
 
 @ interface ViewControllerPractice : UIViewController
+{
+    float count;
+}
+
 @end
